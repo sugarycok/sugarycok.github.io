@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Learn Teachable Machine</title>
+    <title>Teachable Machine Image Model</title>
     <style>
+        /* 중앙 정렬을 위한 스타일 */
         body {
             display: flex;
             flex-direction: column;
@@ -12,115 +13,115 @@
             align-items: center;
             height: 100vh;
             margin: 0;
-            background-color: #f0f0f0; /* 배경색을 회색으로 설정 */
         }
 
-        #big-container {
-            width: 450px; /* 큰 네모의 너비 */
-            height: 450px; /* 큰 네모의 높이 */
-            border-radius: 30px; /* 큰 네모의 모서리를 둥글게 만듦 */
-            background-color: #ccc; /* 큰 네모의 배경색 */
-            padding: 20px; /* 내부 요소와의 간격 설정 */
+        #title-container {
+            width: 100%;
+            padding: 20px 0;
+            background-color: blue;
+            color: white;
+            font-size: 24px;
+            text-align: center;
+        }
+
+        #container {
+            position: relative;
+            width: 400px; /* 큰 네모의 너비 */
+            height: 400px; /* 큰 네모의 높이 */
+            border-radius: 20px; /* 큰 네모의 모서리를 둥글게 만듦 */
+            background-color: #f0f0f0; /* 배경색 */
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            padding: 20px;
         }
 
         #video-container {
-            position: relative; /* 작은 네모의 상대적 위치 설정 */
-            width: 350px; /* 작은 네모의 너비 */
-            height: 350px; /* 작은 네모의 높이 */
-            background-color: #fff; /* 작은 네모의 배경색 */
-            border-radius: 20px; /* 작은 네모의 모서리를 둥글게 만듦 */
+            width: 300px; /* 작은 네모의 너비 */
+            height: 300px; /* 작은 네모의 높이 */
+            border-radius: 15px; /* 작은 네모의 모서리를 둥글게 만듦 */
             overflow: hidden; /* 내부 요소의 넘치는 부분을 숨김 */
+            margin-bottom: 20px;
         }
 
         #webcam {
-            width: 100%; /* 영상이 작은 네모 안에 꽉 차도록 설정 */
-            height: 100%; /* 영상이 작은 네모 안에 꽉 차도록 설정 */
-            border: none; /* 테두리 제거 */
+            width: 100%;
+            height: 100%;
         }
 
         #button-container {
-            margin-top: 20px; /* 버튼과 작은 네모 사이의 간격 설정 */
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            text-align: center;
         }
 
         button {
-            padding: 10px 20px; /* 버튼의 내부 여백 설정 */
-            font-size: 16px; /* 버튼의 글꼴 크기 설정 */
+            padding: 10px 20px;
+            font-size: 16px;
         }
 
-        /* 나머지 스타일 유지 */
         #label-container {
             text-align: center;
         }
     </style>
 </head>
 <body>
-    <div id="big-container">
+    <div id="title-container">
+        웹앱 프로젝트
+    </div>
+    <div id="container">
         <div id="video-container">
-            <video id="webcam" width="350" height="350"></video>
+            <!-- 웹캠 영상이 여기에 나타납니다 -->
         </div>
         <div id="button-container">
             <button type="button" onclick="init()">Start</button>
         </div>
     </div>
     <div id="label-container"></div>
+
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
     <script type="text/javascript">
-        // More API functions here:
-        // https://github.com/googlecreativelab/teachablemachine-community/tree/master/libraries/image
-
-        // the link to your model provided by Teachable Machine export panel
+        // Teachable Machine에서 제공한 모델 링크
         const URL = "https://teachablemachine.withgoogle.com/models/8mtJInfRU/";
 
         let model, webcam, labelContainer, maxPredictions;
 
-        // Load the image model and setup the webcam
+        // 이미지 모델 로드 및 웹캠 설정
         async function init() {
             const modelURL = URL + "model.json";
             const metadataURL = URL + "metadata.json";
 
-            // load the model and metadata
-            // Refer to tmImage.loadFromFiles() in the API to support files from a file picker
-            // or files from your local hard drive
-            // Note: the pose library adds "tmImage" object to your window (window.tmImage)
+            // 모델과 메타데이터 로드
             model = await tmImage.load(modelURL, metadataURL);
             maxPredictions = model.getTotalClasses();
 
-            // Convenience function to setup a webcam
-            const flip = true; // whether to flip the webcam
-            webcam = new tmImage.Webcam(350, 350, flip); // width, height, flip
-            await webcam.setup(); // request access to the webcam
+            // 웹캠 설정
+            const flip = true;
+            webcam = new tmImage.Webcam(300, 300, flip);
+            await webcam.setup();
             await webcam.play();
             window.requestAnimationFrame(loop);
 
-            // append elements to the DOM
+            // DOM에 요소 추가
             document.getElementById("video-container").appendChild(webcam.canvas);
             labelContainer = document.getElementById("label-container");
-            for (let i = 0; i < maxPredictions; i++) { // and class labels
+            for (let i = 0; i < maxPredictions; i++) {
                 labelContainer.appendChild(document.createElement("div"));
             }
         }
 
+        // 예측 실행
         async function loop() {
-            webcam.update(); // update the webcam frame
+            webcam.update();
             await predict();
             window.requestAnimationFrame(loop);
         }
 
-        // run the webcam image through the image model
+        // 이미지 모델로 웹캠 이미지 예측
         async function predict() {
-            // predict can take in an image, video or canvas html element
             const prediction = await model.predict(webcam.canvas);
             for (let i = 0; i < maxPredictions; i++) {
-                const classPrediction =
-                    prediction[i].className + ": " + prediction[i].probability.toFixed(2);
+                const classPrediction = prediction[i].className + ": " + prediction[i].probability.toFixed(2);
                 labelContainer.childNodes[i].innerHTML = classPrediction;
             }
         }
