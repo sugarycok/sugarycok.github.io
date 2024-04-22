@@ -26,7 +26,7 @@
 
         #container {
             position: relative;
-            width: 90%; /* 모바일 화면에 맞게 조정 */
+            width: 90%; /* 큰 네모의 너비 */
             max-width: 400px; /* 큰 네모의 최대 너비 */
             height: 400px; /* 큰 네모의 높이 */
             border-radius: 20px; /* 큰 네모의 모서리를 둥글게 만듦 */
@@ -40,15 +40,19 @@
 
         #video-container {
             width: 90%; /* 작은 네모의 너비 */
-            height: 300px; /* 작은 네모의 높이 */
+            height: 90%; /* 작은 네모의 높이 */
             border-radius: 15px; /* 작은 네모의 모서리를 둥글게 만듦 */
             overflow: hidden; /* 내부 요소의 넘치는 부분을 숨김 */
             margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         #webcam {
-            width: 100%;
+            width: auto;
             height: 100%;
+            object-fit: cover; /* 비율 유지하며 채우기 */
         }
 
         #button-container {
