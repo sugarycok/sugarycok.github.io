@@ -9,3 +9,6 @@ Teachable Machine을 이용해 이미지 구별 모델로 학습시켰습니다.
 ![웹](https://github.com/sugarycok/sugarycok.github.io/assets/167059284/a77c58df-ce55-4a90-92a4-5ecbffbabfd9)
 
 > #### start 버튼을 누르면 핸드폰 카메라나 컴퓨터의 웹캠을 통해 촬영하고 그것을 구분해 줄 겁니다.
+![웹실행](https://github.com/sugarycok/sugarycok.github.io/assets/167059284/e84313e2-bc9e-49d2-af97-dd5a93dc8daf)
+
+(식물 비율이 높은 이유는 아마 옷 색 때문일 겁니다.)
