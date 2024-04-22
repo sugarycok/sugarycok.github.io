@@ -1,58 +1,119 @@
 <!DOCTYPE html>
 <html lang="ko">
-  <head>
-    <meta charset="UTF-8" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Learn Teachable Machine</title>
-  </head>
-  <body>
-    <div>Teachable Machine Image Model</div>
-    <button type="button" onclick="init()">Start</button>
-    <div id="webcam-container"></div>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0; /* 배경색을 회색으로 설정 */
+        }
+
+        #big-container {
+            width: 450px; /* 큰 네모의 너비 */
+            height: 450px; /* 큰 네모의 높이 */
+            border-radius: 30px; /* 큰 네모의 모서리를 둥글게 만듦 */
+            background-color: #ccc; /* 큰 네모의 배경색 */
+            padding: 20px; /* 내부 요소와의 간격 설정 */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #video-container {
+            position: relative; /* 작은 네모의 상대적 위치 설정 */
+            width: 350px; /* 작은 네모의 너비 */
+            height: 350px; /* 작은 네모의 높이 */
+            background-color: #fff; /* 작은 네모의 배경색 */
+            border-radius: 20px; /* 작은 네모의 모서리를 둥글게 만듦 */
+            overflow: hidden; /* 내부 요소의 넘치는 부분을 숨김 */
+        }
+
+        #webcam {
+            width: 100%; /* 영상이 작은 네모 안에 꽉 차도록 설정 */
+            height: 100%; /* 영상이 작은 네모 안에 꽉 차도록 설정 */
+            border: none; /* 테두리 제거 */
+        }
+
+        #button-container {
+            margin-top: 20px; /* 버튼과 작은 네모 사이의 간격 설정 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        button {
+            padding: 10px 20px; /* 버튼의 내부 여백 설정 */
+            font-size: 16px; /* 버튼의 글꼴 크기 설정 */
+        }
+
+        /* 나머지 스타일 유지 */
+        #label-container {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div id="big-container">
+        <div id="video-container">
+            <video id="webcam" width="350" height="350"></video>
+        </div>
+        <div id="button-container">
+            <button type="button" onclick="init()">Start</button>
+        </div>
+    </div>
     <div id="label-container"></div>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest/dist/teachablemachine-image.min.js"></script>
     <script type="text/javascript">
         // More API functions here:
         // https://github.com/googlecreativelab/teachablemachine-community/tree/master/libraries/image
-    
+
         // the link to your model provided by Teachable Machine export panel
-        const URL = "./model/";
-    
+        const URL = "https://teachablemachine.withgoogle.com/models/8mtJInfRU/";
+
         let model, webcam, labelContainer, maxPredictions;
-    
+
         // Load the image model and setup the webcam
         async function init() {
             const modelURL = URL + "model.json";
             const metadataURL = URL + "metadata.json";
-    
+
             // load the model and metadata
             // Refer to tmImage.loadFromFiles() in the API to support files from a file picker
             // or files from your local hard drive
             // Note: the pose library adds "tmImage" object to your window (window.tmImage)
             model = await tmImage.load(modelURL, metadataURL);
             maxPredictions = model.getTotalClasses();
-    
+
             // Convenience function to setup a webcam
             const flip = true; // whether to flip the webcam
-            webcam = new tmImage.Webcam(200, 200, flip); // width, height, flip
+            webcam = new tmImage.Webcam(350, 350, flip); // width, height, flip
             await webcam.setup(); // request access to the webcam
             await webcam.play();
             window.requestAnimationFrame(loop);
-    
+
             // append elements to the DOM
-            document.getElementById("webcam-container").appendChild(webcam.canvas);
+            document.getElementById("video-container").appendChild(webcam.canvas);
             labelContainer = document.getElementById("label-container");
             for (let i = 0; i < maxPredictions; i++) { // and class labels
                 labelContainer.appendChild(document.createElement("div"));
             }
         }
-    
+
         async function loop() {
             webcam.update(); // update the webcam frame
             await predict();
             window.requestAnimationFrame(loop);
         }
-    
+
         // run the webcam image through the image model
         async function predict() {
             // predict can take in an image, video or canvas html element
@@ -64,5 +125,5 @@
             }
         }
     </script>
-  </body>
+</body>
 </html>
